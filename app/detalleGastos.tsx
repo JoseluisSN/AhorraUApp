@@ -1,17 +1,20 @@
 import { Stack } from "expo-router";
 import { useState } from "react";
 import {
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View
+  Dimensions,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
+import { PieChart } from "react-native-chart-kit";
 
-// Tipos de gastos
+const screenWidth = Dimensions.get("window").width;
+
 type GastosType = {
-  [key: string]: number;
+  [key: string]: string | number;
 };
 
 export default function DetalleGastos() {
@@ -46,15 +49,46 @@ export default function DetalleGastos() {
     const key = cat.toLowerCase();
 
     if (!gastos[key]) {
-      setGastos({ ...gastos, [key]: 0 });
-      setEditValues({ ...editValues, [key]: 0 });
+      setGastos({ ...gastos, [key]: 1 });
+      setEditValues({ ...editValues, [key]: 1 });
     }
 
     setShowCategories(false);
   };
 
+  const colores = [
+    "#FF5733",
+    "#FFC300",
+    "#36A2EB",
+    "#4CAF50",
+    "#9C27B0",
+    "#FF9800",
+    "#009688",
+    "#E91E63",
+  ];
+
+  const clavesUnicas = Array.from(
+    new Map(
+      Object.keys(gastos)
+        .filter((k) => k !== "total")
+        .map((k) => [capitalizar(k), k])
+    ).values()
+  );
+
+
+  const pieData = Object.keys(gastos)
+    .filter((k) => k !== "total" && typeof gastos[k] === "number")
+    .map((k, i) => ({
+      name: capitalizar(k),
+      value: gastos[k] ?? 0,
+      color: colores[i % colores.length] || "#000",
+      legendFontColor: "#000",
+      legendFontSize: 12,
+    }))
+    .filter((item) => Number(item.value) > 0);
+
   return (
-    <ScrollView 
+    <ScrollView
       style={styles.container}
       contentContainerStyle={{ paddingBottom: 40 }}
       showsVerticalScrollIndicator={false}
@@ -78,10 +112,39 @@ export default function DetalleGastos() {
         ))}
 
         <Text style={styles.subtitle}>Distribución de Gastos</Text>
-        <View style={styles.piePlaceholder} />
+
+        {pieData.length > 0 ? (
+          <PieChart
+            data={pieData.map((p) => ({
+              name: p.name,
+              population: p.value,
+              color: p.color,
+              legendFontColor: "#000",
+              legendFontSize: 12,
+            }))}
+            width={screenWidth - 40}
+            height={200}
+            chartConfig={{
+              backgroundColor: "#fff",
+              backgroundGradientFrom: "#fff",
+              backgroundGradientTo: "#fff",
+              color: () => "#000",
+              decimalPlaces: 0,
+            }}
+            accessor="population"
+            backgroundColor="transparent"
+            paddingLeft="0"
+            absolute
+          />
+        ) : (
+          <View style={styles.piePlaceholder}>
+            <Text style={{ textAlign: "center" }}>
+              No hay suficientes datos para mostrar el gráfico
+            </Text>
+          </View>
+        )}
       </View>
 
-      {/* Botón Editar */}
       <TouchableOpacity
         onPress={() => setEditing(!editing)}
         style={styles.borderWhiteButton}
@@ -91,7 +154,6 @@ export default function DetalleGastos() {
         </Text>
       </TouchableOpacity>
 
-      {/* Sección Editar */}
       {editing && (
         <View style={styles.editContainer}>
           <Text style={styles.editTitle}>Editar montos</Text>
@@ -104,8 +166,9 @@ export default function DetalleGastos() {
                 keyboardType="numeric"
                 value={String(editValues[key])}
                 onChangeText={(t) =>
-                  setEditValues({ ...editValues, [key]: Number(t) })
+                  setEditValues({ ...editValues, [key]: t === "" ? 0 : Number(t) })
                 }
+
                 style={styles.editInput}
               />
             </View>
@@ -117,7 +180,6 @@ export default function DetalleGastos() {
         </View>
       )}
 
-      {/* Botón Añadir categoría */}
       <TouchableOpacity
         style={styles.addCategoryButton}
         onPress={() => setShowCategories(!showCategories)}
@@ -125,7 +187,6 @@ export default function DetalleGastos() {
         <Text style={styles.addCategoryText}>Añadir categoría</Text>
       </TouchableOpacity>
 
-      {/* Lista categorías */}
       {showCategories && (
         <View style={styles.categoryList}>
           {categories.map((cat) => (
@@ -143,7 +204,6 @@ export default function DetalleGastos() {
   );
 }
 
-// Row TIPADO
 function Row({ label, value }: { label: string; value: string }) {
   return (
     <View style={styles.row}>
@@ -153,14 +213,9 @@ function Row({ label, value }: { label: string; value: string }) {
   );
 }
 
-// función capitalizar TIPADA
 function capitalizar(texto: string): string {
   return texto.charAt(0).toUpperCase() + texto.slice(1);
 }
-
-// ------------------------------
-// ESTILOS 100% CORRECTOS
-// ------------------------------
 
 const styles = StyleSheet.create({
   container: {
@@ -198,6 +253,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#e0e0e0",
     borderRadius: 100,
     marginTop: 15,
+    justifyContent: "center",
+    alignItems: "center",
   },
 
   row: {
