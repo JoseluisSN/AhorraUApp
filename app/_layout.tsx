@@ -15,8 +15,10 @@ export default function RootLayout() {
           headerStyle: {
             backgroundColor: '#F4B000',
           },
-          headerTintColor: '#000', 
-          headerShadowVisible: false, 
+          headerTintColor: '#000',
+          headerShadowVisible: false,
+
+          gestureEnabled: false,
         }}
       >
         <Stack.Screen
