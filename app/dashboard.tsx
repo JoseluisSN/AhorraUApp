@@ -9,9 +9,7 @@ import {
   View,
 } from "react-native";
 
-// ---------------------------------------------------
-// 🔥 Lógica de Backend para Gastos
-// ---------------------------------------------------
+// Lógica de Backend para Gastos
 const BACKEND_URL = "https://skinlike-clutchingly-hyun.ngrok-free.dev";
 const API_GET_GASTOS = `${BACKEND_URL}/gastos/usuario`;
 type GastosType = { [key: string]: number };
@@ -23,9 +21,8 @@ async function obtenerGastos(usuarioId: string): Promise<GastosType> {
   return data.gastos as GastosType;
 }
 
-// ---------------------------------------------------
-// 💡 Lógica para la Recomendación (sin saltos de línea)
-// ---------------------------------------------------
+//Lógica para la Recomendación (sin saltos de línea)
+
 function generarRecomendacion(gastos: GastosType): string {
   const total =
     gastos.total ||
@@ -61,9 +58,8 @@ function generarRecomendacion(gastos: GastosType): string {
   return `💰 ¡Felicidades! Gasto de S/. ${totalFormateado} es excelente. Mantente así. Si necesitas un extra, un ${ahorroPorcentaje}% de ahorro son S/. ${ahorroFormateado}.`;
 }
 
-// ---------------------------------------------------
-// 🧠 Lógica para el Consejo Financiero
-// ---------------------------------------------------
+//Lógica para el Consejo Financiero
+
 function getFinancialTip(): string {
   const tips = [
     "Establece una meta de ahorro mensual. ¡El 10% de tus ingresos es un excelente inicio!",
@@ -146,7 +142,7 @@ export default function Home() {
 
         <Text style={styles.question}>¿Qué deseas hacer?</Text>
 
-        {/* 🔥 BOTONES */}
+        {/*  BOTONES */}
         <View style={styles.buttonsWrapper}>
           <TouchableOpacity
             style={styles.button}
@@ -170,7 +166,7 @@ export default function Home() {
           </TouchableOpacity>
         </View>
 
-        {/* 🔥 RECOMENDACIÓN */}
+        {/*  RECOMENDACIÓN */}
         {recomendacion !== "" && (
           <View style={styles.recommendationTag}>
             <Text style={styles.recommendationLabel}>Análisis Rápido:</Text>
@@ -178,7 +174,7 @@ export default function Home() {
           </View>
         )}
 
-        {/* 🔥 CONSEJO */}
+        {/*  CONSEJO */}
         {consejoFinanciero !== "" && (
           <View style={styles.tipTag}>
             <Text style={styles.tipLabel}>Consejo Financiero 💡:</Text>

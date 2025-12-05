@@ -38,7 +38,7 @@ export default function CalcularGastos() {
 
       const usuario_id = Number(id);
 
-      // 🔥 LLAMAR AL ENDPOINT CORRECTO
+      // LLAMAR AL ENDPOINT CORRECTO
       const response = await fetch(`${BACKEND_URL}/calcular-escenario`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -55,7 +55,7 @@ export default function CalcularGastos() {
         throw new Error(data.detail || "Error en el cálculo");
       }
 
-      // 🔥 ENVIAR DATOS A GASTOSTOTALES
+      // ENVIAR DATOS A GASTOSTOTALES
       router.push({
         pathname: "/gastosTotales",
         params: { resultado: JSON.stringify(data) },

@@ -15,9 +15,7 @@ import { PieChart } from "react-native-chart-kit";
 
 const screenWidth = Dimensions.get("window").width;
 
-// ---------------------------------------------------
-// 🔥 BACKEND REAL
-// ---------------------------------------------------
+// BACKEND 
 const BACKEND_URL = "https://skinlike-clutchingly-hyun.ngrok-free.dev";
 
 const API_GET_GASTOS = `${BACKEND_URL}/gastos/usuario`;
@@ -26,14 +24,14 @@ const API_ADD_CATEGORY = `${BACKEND_URL}/categorias/nueva`;
 
 type GastosType = { [key: string]: number };
 
-// 🔥 Obtener gastos desde backend
+// Obtener gastos desde backend
 async function obtenerGastos(usuarioId: string) {
   const res = await fetch(`${API_GET_GASTOS}/${usuarioId}`);
 
   const data = await res.json();
   if (!res.ok) throw new Error(data.detail || "Error obteniendo gastos");
 
-  return data.gastos; // backend devuelve { usuario_id, gastos }
+  return data.gastos; 
 }
 
 // 🔥 Guardar gastos en backend
@@ -58,11 +56,10 @@ export default function DetalleGastos() {
   const [editValues, setEditValues] = useState<GastosType>({});
   const [editing, setEditing] = useState(false);
   const [showCategories, setShowCategories] = useState(false);
-  const [reduccionesAplicadas, setReduccionesAplicadas] = useState(false); // 🚩 NUEVO: Para romper el bucle infinito
+  const [reduccionesAplicadas, setReduccionesAplicadas] = useState(false); 
 
-  // ------------------------------------
-  // 🔥 CARGAR USUARIO + GASTOS
-  // ------------------------------------
+  // CARGAR USUARIO + GASTOS
+
   useEffect(() => {
     (async () => {
       const id = await AsyncStorage.getItem("usuario_id");
@@ -87,9 +84,8 @@ export default function DetalleGastos() {
     })();
   }, []);
 
-  // ------------------------------------
-  // 🔥 APLICAR REDUCCIONES (CORREGIDO para evitar bucle infinito)
-  // ------------------------------------
+  // APLICAR REDUCCIONES
+
   useEffect(() => {
     // 🛑 Rompemos el bucle si ya se aplicó la reducción
     if (!reducciones || reduccionesAplicadas) return; 
@@ -116,9 +112,8 @@ export default function DetalleGastos() {
     setReduccionesAplicadas(true); // 🚩 Marcamos como aplicado
   }, [reducciones, gastos]);
 
-  // ------------------------------------
-  // 🔥 Recalcular TOTAL
-  // ------------------------------------
+  // Recalcular TOTAL
+
   function actualizarTotales(obj: GastosType) {
     const total = Object.entries(obj)
       .filter(([k]) => k !== "total")
@@ -132,18 +127,16 @@ export default function DetalleGastos() {
     return nuevos;
   }
 
-  // ------------------------------------
-  // 🔥 Confirmar edición local
-  // ------------------------------------
+  // Confirmar edición local
+
   const handleConfirm = () => {
     const actualizados = actualizarTotales(editValues);
     setGastos(actualizados);
     setEditing(false);
   };
 
-  // ------------------------------------
-  // 🔥 Crear categoría
-  // ------------------------------------
+  // Crear categoría
+
   const categories = ["Salud", "Educación", "Mascotas", "Imprevistos"];
 
   async function addCategory(cat: string) {
@@ -167,9 +160,8 @@ export default function DetalleGastos() {
     setShowCategories(false);
   }
 
-  // ------------------------------------
-  // 🔥 Gráfico (CORREGIDO para evitar datos no numéricos)
-  // ------------------------------------
+  // Gráfico (CORREGIDO para evitar datos no numéricos)
+
   const pieData = Object.keys(gastos)
     .filter((k) => k !== "total")
     .map((k, i) => {
