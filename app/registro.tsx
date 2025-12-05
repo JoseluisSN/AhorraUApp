@@ -12,7 +12,7 @@ import {
 
 const BACKEND_URL = "https://skinlike-clutchingly-hyun.ngrok-free.dev";
 
-// 🟢 Registrar estudiante con respuesta correcta y guardado en AsyncStorage
+//  Registrar estudiante con respuesta correcta y guardado en AsyncStorage
 async function registrarEstudiante(
   nombre: string,
   email: string,
@@ -40,7 +40,7 @@ async function registrarEstudiante(
     throw new Error(data.detail || "Error en registro.");
   }
 
-  // 🟢 Guardar datos del usuario en async storage (nuevo formato correcto)
+  // Guardar datos del usuario en async storage (nuevo formato correcto)
   await AsyncStorage.setItem("nombre", data.usuario.nombre);
   await AsyncStorage.setItem("usuario_id", String(data.usuario.id));
   await AsyncStorage.setItem("universidad", data.usuario.universidad || "");

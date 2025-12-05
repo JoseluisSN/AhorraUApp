@@ -47,7 +47,7 @@ export default function LoginScreen() {
         body: JSON.stringify({ email, password })
       });
 
-      const rawText = await response.text(); // puede venir NO JSON
+      const rawText = await response.text();
       let data;
 
       try {
